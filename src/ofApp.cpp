@@ -11,9 +11,9 @@ static const int THRESHOLD_INC = 1;
 static const float SIMPLIFICATION_INC = 0.1f;
 static const float BASS_INC = 0.05f;
 static const float BASS_INC_FINE = 0.01f;
-static const int BUMP_COOLDOWN = 15;
 static const int BUMP_DEBUG_W = 500;
 static const int BUMP_DEBUG_H = 300;
+static const float BUMP_DITHER_INC = 0.01f;
 
 void ofApp::setup() {
 	this->grabber.setVerbose(true);
@@ -33,10 +33,6 @@ void ofApp::setup() {
 	this->learn = true;
 	this->threshold = 85;
 
-	this->bgR = 124;
-	this->bgG = 188;
-	this->bgB = 6;
-
 	this->silhouettes.setFillColor(ofColor::fromHex(0));
 	this->silhouettes.setFilled(true);
 	this->holes.setFilled(true);
@@ -48,10 +44,17 @@ void ofApp::setup() {
 	this->bumpThreshold = 0.7;
 	memset(&this->bands[0], 0, sizeof(this->bands));
 	this->bump = 0.0f;
+	this->dither = 0.2f;
+
+	this->cooldownCount = 10;
+	this->cooldown = 0;
+
+	this->bg.setHsb(0, 161, 255);
+	this->onBump(); // Initialize the background color.
 }
 
 void ofApp::update() {
-	ofBackground(this->bgR, this->bgG, this->bgB);
+	ofBackground(this->bg);
 
 	this->grabber.update();
 	bool newFrame = this->grabber.isFrameNew();
@@ -78,13 +81,31 @@ void ofApp::update() {
 	this->updateBump();
 }
 
-static int c = 0; /* XXX DEBUG */
 void ofApp::onBump() {
-	cout << "\x1b[36;1mBUMP\x1b[0m" << c++ << endl;
+	this->bg.setHue(rand() % 360);
 }
 
-int ofApp::influenceBands(float *levels) {
+// make sure 0 <= x <= 1 or you'll get weird results.
+float interpolate(float x, float y) {
+	return (1.0f - pow(x, 3)) * y;
+}
 
+void ofApp::influenceBands(float *levels) {
+	for (int i = 0; i < BUMP_BANDS; i++) {
+		if (levels[i] > this->bands[i].level) {
+			this->bands[i].level = levels[i];
+			this->bands[i].rawLevel = levels[i];
+			this->bands[i].cooldown = 0.0f;
+		} else {
+			if (this->bands[i].cooldown < 1.0f) {
+				this->bands[i].cooldown += this->dither;
+				this->bands[i].cooldown = min(1.0f, this->bands[i].cooldown);
+				this->bands[i].level = interpolate(
+					this->bands[i].cooldown,
+					this->bands[i].rawLevel);
+			}
+		}
+	}
 }
 
 void ofApp::updateBump() {
@@ -103,6 +124,7 @@ void ofApp::updateBump() {
 	for (int i = 0; i < BUMP_BANDS; i++) {
 		if (this->bands[i].enabled) {
 			this->bump += this->bands[i].level;
+			++enabled;
 		}
 	}
 
@@ -113,7 +135,12 @@ void ofApp::updateBump() {
 	this->bump /= (float) enabled;
 
 	if (this->bump >= this->bumpThreshold) {
-		this->onBump();
+		if (this->cooldown <= 0) {
+			this->onBump();
+			this->cooldown = this->cooldownCount;
+		} else {
+			--this->cooldown;
+		}
 	}
 }
 
@@ -141,7 +168,7 @@ void ofApp::processPath(std::vector<ofPoint> &blob, ofPath &path) {
 }
 
 void ofApp::updateContours() {
-	this->holes.setFillColor(ofColor(this->bgR, this->bgG, this->bgB));
+	this->holes.setFillColor(this->bg);
 
 	this->silhouettes.clear();
 	this->holes.clear();
@@ -207,7 +234,7 @@ void ofApp::drawBumpDebug() {
 
 void ofApp::draw() {
 	this->silhouettes.draw(0, 0);
-	this->holes.draw(0, 0);
+//	this->holes.draw(0, 0);
 
 	if (this->debug) {
 		ofSetHexColor(0xFFFFFF);
@@ -269,6 +296,22 @@ void ofApp::keyPressed(int key) {
 		case 'Z':
 			this->bumpThreshold -= BASS_INC_FINE;
 			cout << "bass threshold: " << this->bumpThreshold << endl;
+			break;
+		case 'w':
+			this->dither += BUMP_DITHER_INC;
+			cout << "band dither: " << this->dither << endl;
+			break;
+		case 'q':
+			this->dither -= BUMP_DITHER_INC;
+			cout << "band dither: " << this->dither << endl;
+			break;
+		case '=': // +
+			++this->cooldownCount;
+			cout << "cooldown count: " << this->cooldownCount << endl;
+			break;
+		case '-':
+			--this->cooldownCount;
+			cout << "cooldown count: " << this->cooldownCount << endl;
 			break;
 		case '1':
 		case '2':  // and I'm free ...

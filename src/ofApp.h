@@ -7,10 +7,11 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 
-#define BUMP_BANDS 18
+#define BUMP_BANDS 27
 
 struct Band {
 	float level;
+	float rawLevel;
 	float cooldown;
 	bool enabled;
 };
@@ -27,7 +28,7 @@ public:
 private:
 	void updateContours();
 	void updateBump();
-	int influenceBands(float *bands);
+	void influenceBands(float *bands);
 	void onBump();
 
 	void drawBumpDebug();
@@ -47,7 +48,10 @@ private:
 	float bumpThreshold;
 	Band bands[BUMP_BANDS];
 	float bump;
+	float dither;
 	bool debugSound;
+	int cooldownCount;
+	int cooldown;
 
 	int threshold;
 	float simplification;
@@ -58,9 +62,7 @@ private:
 
 	ofPolyline simplifier;
 
-	int bgR;
-	int bgG;
-	int bgB;
+	ofColor bg;
 
 	bool debug;
 };
