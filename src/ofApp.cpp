@@ -45,11 +45,9 @@ void ofApp::setup() {
 	this->debugSound = false;
 
 	this->player.setLoop(true);
-	this->bumpCooldown = 0;
 	this->bumpThreshold = 0.7;
 	memset(&this->bands[0], 0, sizeof(this->bands));
-	this->bumpDebug = 0.0f;
-	this->levelsDebug = 0;
+	this->bump = 0.0f;
 }
 
 void ofApp::update() {
@@ -80,9 +78,13 @@ void ofApp::update() {
 	this->updateBump();
 }
 
-static int c = 0;
-void ofApp::bump() {
+static int c = 0; /* XXX DEBUG */
+void ofApp::onBump() {
 	cout << "\x1b[36;1mBUMP\x1b[0m" << c++ << endl;
+}
+
+int ofApp::influenceBands(float *levels) {
+
 }
 
 void ofApp::updateBump() {
@@ -94,17 +96,13 @@ void ofApp::updateBump() {
 		return;
 	}
 
-	// XXX: could this be moved to setup() in order to avoid a write?
-	//      from what I can tell, it's all statically allocated.
-	this->levelsDebug = levels;
+	this->influenceBands(levels);
 
 	int enabled = 0;
-	float bump = 0.0f;
-
+	this->bump = 0.0f;
 	for (int i = 0; i < BUMP_BANDS; i++) {
-		if (this->bands[i]) {
-			++enabled;
-			bump += levels[i];
+		if (this->bands[i].enabled) {
+			this->bump += this->bands[i].level;
 		}
 	}
 
@@ -112,16 +110,10 @@ void ofApp::updateBump() {
 		return;
 	}
 
-	bump /= (float) enabled;
-	this->bumpDebug = bump;
+	this->bump /= (float) enabled;
 
-	if (bump >= this->bumpThreshold) {
-		if (this->bumpCooldown <= 0) {
-			this->bumpCooldown = BUMP_COOLDOWN;
-			this->bump();
-		} else {
-			--this->bumpCooldown;
-		}
+	if (this->bump >= this->bumpThreshold) {
+		this->onBump();
 	}
 }
 
@@ -176,22 +168,23 @@ void ofApp::updateContours() {
 }
 
 void ofApp::drawBumpDebug() {
-	if (!this->levelsDebug) {
-		return;
-	}
-
 	int height = ofGetHeight();
 	int barWidth = BUMP_DEBUG_W / BUMP_BANDS;
 
-	ofSetHexColor(0xFF0000);
+	if (this->bump >= this->bumpThreshold) {
+		ofSetHexColor(0x00FFFF);
+	} else {
+		ofSetHexColor(0xFF0000);
+	}
+
 	ofDrawRectangle(
 		0,
-		height - (BUMP_DEBUG_H * this->bumpDebug),
+		height - (BUMP_DEBUG_H * this->bump),
 		BUMP_DEBUG_W,
 		BUMP_DEBUG_H);
 
 	for (int i = 0; i < BUMP_BANDS; i++) {
-		if (this->bands[i]) {
+		if (this->bands[i].enabled) {
 			ofSetHexColor(0xFFFFFF);
 		} else {
 			ofSetHexColor(0);
@@ -199,7 +192,7 @@ void ofApp::drawBumpDebug() {
 
 		ofDrawRectangle(
 			i * barWidth,
-			height - (BUMP_DEBUG_H * this->levelsDebug[i]),
+			height - (BUMP_DEBUG_H * this->bands[i].level),
 			barWidth,
 			BUMP_DEBUG_H);
 	}
@@ -286,34 +279,34 @@ void ofApp::keyPressed(int key) {
 		case '7': // ... free fallin'...
 		case '8':
 		case '9':
-			this->bands[key - '1'] = !this->bands[key - '1'];
+			this->bands[key - '1'].enabled = !this->bands[key - '1'].enabled;
 			break;
 		case '!':
-			this->bands[9] = !this->bands[9];
+			this->bands[9].enabled = !this->bands[9].enabled;
 			break;
 		case '@':
-			this->bands[10] = !this->bands[10];
+			this->bands[10].enabled = !this->bands[10].enabled;
 			break;
 		case '#':
-			this->bands[11] = !this->bands[11];
+			this->bands[11].enabled = !this->bands[11].enabled;
 			break;
 		case '$':
-			this->bands[12] = !this->bands[12];
+			this->bands[12].enabled = !this->bands[12].enabled;
 			break;
 		case '%':
-			this->bands[13] = !this->bands[13];
+			this->bands[13].enabled = !this->bands[13].enabled;
 			break;
 		case '^':
-			this->bands[14] = !this->bands[14];
+			this->bands[14].enabled = !this->bands[14].enabled;
 			break;
 		case '&':
-			this->bands[15] = !this->bands[15];
+			this->bands[15].enabled = !this->bands[15].enabled;
 			break;
 		case '*':
-			this->bands[16] = !this->bands[16];
+			this->bands[16].enabled = !this->bands[16].enabled;
 			break;
 		case '(':
-			this->bands[17] = !this->bands[17];
+			this->bands[17].enabled = !this->bands[17].enabled;
 			break;
 	}
 }

@@ -9,6 +9,12 @@
 
 #define BUMP_BANDS 18
 
+struct Band {
+	float level;
+	float cooldown;
+	bool enabled;
+};
+
 class ofApp : public ofBaseApp {
 public:
 	void setup();
@@ -21,7 +27,8 @@ public:
 private:
 	void updateContours();
 	void updateBump();
-	void bump();
+	int influenceBands(float *bands);
+	void onBump();
 
 	void drawBumpDebug();
 
@@ -37,11 +44,9 @@ private:
 	ofxCvContourFinder contourFinder;
 
 	ofSoundPlayer player;
-	int bumpCooldown;
 	float bumpThreshold;
-	bool bands[BUMP_BANDS];
-	float bumpDebug;
-	float *levelsDebug;
+	Band bands[BUMP_BANDS];
+	float bump;
 	bool debugSound;
 
 	int threshold;
