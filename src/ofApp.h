@@ -7,6 +7,8 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 
+#define BUMP_BANDS 18
+
 class ofApp : public ofBaseApp {
 public:
 	void setup();
@@ -18,6 +20,10 @@ public:
 	void keyPressed(int key);
 private:
 	void updateContours();
+	void updateBump();
+	void bump();
+
+	void drawBumpDebug();
 
 	void processPath(std::vector<ofPoint> &blob, ofPath &path);
 
@@ -31,6 +37,12 @@ private:
 	ofxCvContourFinder contourFinder;
 
 	ofSoundPlayer player;
+	int bumpCooldown;
+	float bumpThreshold;
+	bool bands[BUMP_BANDS];
+	float bumpDebug;
+	float *levelsDebug;
+	bool debugSound;
 
 	int threshold;
 	float simplification;
