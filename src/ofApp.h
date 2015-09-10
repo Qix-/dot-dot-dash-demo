@@ -28,6 +28,10 @@ private:
 
 	int threshold;
 	bool learn;
+
+	int bgR;
+	int bgG;
+	int bgB;
 };
 
 #endif
