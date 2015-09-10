@@ -63,6 +63,7 @@ void ofApp::update() {
 
 	if (newFrame) {
 		this->image.setFromPixels(this->grabber.getPixels());
+		this->image.mirror(false, true);
 		this->imageGray = this->image;
 
 		if (this->learn) {
