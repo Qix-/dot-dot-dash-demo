@@ -59,6 +59,7 @@ private:
 
 	ofPath silhouettes;
 	ofPath holes;
+	bool showHoles;
 
 	ofPolyline simplifier;
 

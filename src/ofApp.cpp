@@ -51,6 +51,8 @@ void ofApp::setup() {
 
 	this->bg.setHsb(0, 161, 255);
 	this->onBump(); // Initialize the background color.
+
+	this->showHoles = false;
 }
 
 void ofApp::update() {
@@ -175,7 +177,11 @@ void ofApp::updateContours() {
 
 	vector<ofxCvBlob>::iterator bit = this->contourFinder.blobs.begin();
 	while (bit != this->contourFinder.blobs.end()) {
-		ofxCvBlob blob = *bit;
+		ofxCvBlob blob = *(bit++);
+
+		if (blob.hole && !this->showHoles) {
+			continue;
+		}
 
 		ofPath &path = blob.hole
 			? this->holes
@@ -183,8 +189,6 @@ void ofApp::updateContours() {
 
 		this->processPath(blob.pts, path);
 		path.close();
-
-		++bit;
 	}
 
 	float scaleFactorX = ofGetWidth() / IMG_SIZE_W;
@@ -234,7 +238,9 @@ void ofApp::drawBumpDebug() {
 
 void ofApp::draw() {
 	this->silhouettes.draw(0, 0);
-//	this->holes.draw(0, 0);
+	if (this->showHoles) {
+		this->holes.draw(0, 0);
+	}
 
 	if (this->debug) {
 		ofSetHexColor(0xFFFFFF);
@@ -253,6 +259,10 @@ void ofApp::keyPressed(int key) {
 	switch (key) {
 		case ' ':
 			this->learn = true;
+			break;
+		case 'h':
+			this->showHoles = !this->showHoles;
+			cout << "holes: " << this->showHoles << endl;
 			break;
 		case '.':
 			this->simplification += SIMPLIFICATION_INC;
