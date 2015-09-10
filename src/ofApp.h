@@ -12,10 +12,6 @@ public:
 	void draw();
 
 	void keyPressed(int key);
-
-	void setThreshold(int threshold);
-	int getThreshold() const;
-
 private:
 	ofVideoGrabber grabber;
 
@@ -27,6 +23,7 @@ private:
 	ofxCvContourFinder contourFinder;
 
 	int threshold;
+	float simplification;
 	bool learn;
 
 	int bgR;

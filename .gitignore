@@ -4,3 +4,4 @@ Makefile
 !addons.make
 *.plist
 *.xcodeproj/
+/obj/

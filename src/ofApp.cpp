@@ -1,12 +1,23 @@
+#include <iostream>
 #include "ofApp.h"
+
+using namespace std;
 
 static const int IMG_SIZE_W = 320;
 static const int IMG_SIZE_H = 240;
 static const int CONTOUR_SIZE = 20;
+static const int THRESHOLD_INC = 1;
+static const float SIMPLIFICATION_INC = 0.1f;
 
 void ofApp::setup() {
 	this->grabber.setVerbose(true);
-	this->grabber.setup(IMG_SIZE_W, IMG_SIZE_H);
+	this->grabber.initGrabber(IMG_SIZE_W, IMG_SIZE_H);
+
+	cout << "asked for grabber size of "
+		<< IMG_SIZE_W << "x" << IMG_SIZE_H
+		<< ", got " << this->grabber.getWidth() << "x"
+		<< this->grabber.getHeight()
+		<< endl;
 
 	this->image.allocate(IMG_SIZE_W, IMG_SIZE_H);
 	this->imageGray.allocate(IMG_SIZE_W, IMG_SIZE_H);
@@ -24,6 +35,7 @@ void ofApp::setup() {
 void ofApp::update() {
 	ofBackground(this->bgR, this->bgG, this->bgB);
 
+	this->grabber.update();
 	bool newFrame = this->grabber.isFrameNew();
 
 	if (newFrame) {
@@ -31,6 +43,7 @@ void ofApp::update() {
 		this->imageGray = this->image;
 
 		if (this->learn) {
+			cout << "re-learning background" << endl;
 			this->learn = false;
 			this->imageBg = this->imageGray;
 		}
@@ -55,17 +68,29 @@ void ofApp::draw() {
 	ofDrawRectangle(360, 540, IMG_SIZE_W, IMG_SIZE_H);
 	ofSetHexColor(0xFFFFFF);
 
-	this->contourFinder.draw(360, 540);
+	this->contourFinder.draw(350, 540);
 }
 
 void ofApp::keyPressed(int key) {
-
-}
-
-void setThreshold(int threshold) {
-	this->threshold = threshold;
-}
-
-int getThreshold() const {
-	return this->threshold;
+	switch (key) {
+		case ' ':
+			this->learn = true;
+			break;
+		case '.':
+			this->simplification += SIMPLIFICATION_INC;
+			cout << "simplification: " << this->simplification << endl;
+			break;
+		case ',':
+			this->simplification -= SIMPLIFICATION_INC;
+			cout << "simplification: " << this->simplification << endl;
+			break;
+		case ']':
+			this->threshold += THRESHOLD_INC;
+			cout << "threshold: " << this->threshold << endl;
+			break;
+		case '[':
+			this->threshold -= THRESHOLD_INC;
+			cout << "threshold: " << this->threshold << endl;
+			break;
+	}
 }
