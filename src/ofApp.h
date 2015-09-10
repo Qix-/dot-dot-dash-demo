@@ -13,6 +13,8 @@ public:
 	void update();
 	void draw();
 
+	void dragEvent(ofDragInfo info);
+
 	void keyPressed(int key);
 private:
 	void updateContours();
@@ -27,6 +29,8 @@ private:
 	ofxCvGrayscaleImage imageDiff;
 
 	ofxCvContourFinder contourFinder;
+
+	ofSoundPlayer player;
 
 	int threshold;
 	float simplification;

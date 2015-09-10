@@ -1,3 +1,4 @@
+#include <string>
 #include <iostream>
 #include "ofApp.h"
 
@@ -36,6 +37,8 @@ void ofApp::setup() {
 	this->holes.setFilled(true);
 
 	this->debug = false;
+
+	this->player.setLoop(true);
 }
 
 void ofApp::update() {
@@ -155,4 +158,19 @@ void ofApp::keyPressed(int key) {
 			ofToggleFullscreen();
 			break;
 	}
+}
+
+void ofApp::dragEvent(ofDragInfo info) {
+	// currently only support one file at a time.
+	if (info.files.size() != 1) {
+		cerr << "only one file is allowed at a time!" << endl;
+		return;
+	}
+
+	string filename = info.files[0];
+	cout << "starting to play: " << filename << endl;
+
+	this->player.stop();
+	this->player.loadSound(filename, true);
+	this->player.play();
 }
