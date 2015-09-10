@@ -34,6 +34,8 @@ private:
 	int bgR;
 	int bgG;
 	int bgB;
+
+	bool debug;
 };
 
 #endif

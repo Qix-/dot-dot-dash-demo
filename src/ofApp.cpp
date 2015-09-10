@@ -35,6 +35,8 @@ void ofApp::setup() {
 	this->silhouettes.setFillColor(ofColor::fromHex(0));
 	this->silhouettes.setFilled(true);
 	this->holes.setFilled(true);
+
+	this->debug = false;
 }
 
 void ofApp::update() {
@@ -100,13 +102,15 @@ void ofApp::updateContours() {
 }
 
 void ofApp::draw() {
-	ofSetHexColor(0xFFFFFF);
-	this->image.draw(0, IMG_SIZE_H);
-	this->imageDiff.draw(0, 0);
-	this->contourFinder.draw(0, 0);
+	if (this->debug) {
+		ofSetHexColor(0xFFFFFF);
+		this->image.draw(0, IMG_SIZE_H);
+		this->imageDiff.draw(0, 0);
+		this->contourFinder.draw(0, 0);
+	}
 
 	this->silhouettes.draw(IMG_SIZE_W, 0);
-	//this->holes.draw(IMG_SIZE_W, 0);
+	this->holes.draw(IMG_SIZE_W, 0);
 }
 
 void ofApp::keyPressed(int key) {
@@ -129,6 +133,10 @@ void ofApp::keyPressed(int key) {
 		case '[':
 			this->threshold -= THRESHOLD_INC;
 			cout << "threshold: " << this->threshold << endl;
+			break;
+		case 'd':
+			this->debug = !this->debug;
+			cout << "debug: " << this->debug << endl;
 			break;
 	}
 }
