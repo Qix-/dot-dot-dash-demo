@@ -106,6 +106,12 @@ void ofApp::updateContours() {
 
 		++bit;
 	}
+
+	float scaleFactorX = ofGetWidth() / IMG_SIZE_W;
+	float scaleFactorY = ofGetHeight() / IMG_SIZE_H;
+
+	this->silhouettes.scale(scaleFactorX, scaleFactorY);
+	this->holes.scale(scaleFactorX, scaleFactorY);
 }
 
 void ofApp::draw() {
@@ -116,8 +122,8 @@ void ofApp::draw() {
 		this->contourFinder.draw(0, 0);
 	}
 
-	this->silhouettes.draw(IMG_SIZE_W, 0);
-	this->holes.draw(IMG_SIZE_W, 0);
+	this->silhouettes.draw(0, 0);
+	this->holes.draw(0, 0);
 }
 
 void ofApp::keyPressed(int key) {
@@ -144,6 +150,9 @@ void ofApp::keyPressed(int key) {
 		case 'd':
 			this->debug = !this->debug;
 			cout << "debug: " << this->debug << endl;
+			break;
+		case 'f':
+			ofToggleFullscreen();
 			break;
 	}
 }
