@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include "ofApp.h"
 
 using namespace std;
@@ -65,6 +64,29 @@ void ofApp::update() {
 	}
 }
 
+void ofApp::processPath(std::vector<ofPoint> &blob, ofPath &path) {
+	// first, we use a PolyLine to simplify the blob points
+	this->simplifier.clear();
+	this->simplifier.addVertices(blob);
+	this->simplifier.close();
+	this->simplifier.simplify(this->simplification);
+
+	// then, we re-curve them so they don't look like origami
+	std::vector<ofPoint> &vertices = this->simplifier.getVertices();
+	std::vector<ofPoint>::iterator itr = vertices.begin();
+	bool first = true;
+	while (itr != vertices.end()) {
+		ofPoint p = *itr;
+		if (first) {
+			first = false;
+			path.moveTo(p);
+		} else {
+			path.curveTo(p);
+		}
+		++itr;
+	}
+}
+
 void ofApp::updateContours() {
 	this->holes.setFillColor(ofColor(this->bgR, this->bgG, this->bgB));
 
@@ -75,30 +97,15 @@ void ofApp::updateContours() {
 	while (bit != this->contourFinder.blobs.end()) {
 		ofxCvBlob blob = *bit;
 
-		ofPath &path = blob.hole ? this->holes : this->silhouettes;
+		ofPath &path = blob.hole
+			? this->holes
+			: this->silhouettes;
 
-		vector<ofPoint>::iterator pit = blob.pts.begin();
-		bool first = true;
-		while (pit != blob.pts.end()) {
-			ofPoint pt = *pit;
-
-			if (first) {
-				first = false;
-				path.moveTo(pt);
-			} else {
-				path.curveTo(pt);
-			}
-
-			++pit;
-		}
-
+		this->processPath(blob.pts, path);
 		path.close();
 
 		++bit;
 	}
-
-	this->silhouettes.simplify(this->simplification);
-	this->holes.simplify(this->simplification);
 }
 
 void ofApp::draw() {

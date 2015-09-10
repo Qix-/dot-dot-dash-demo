@@ -2,6 +2,8 @@
 #define OF_APPLE_DDD_H__
 #pragma once
 
+#include <vector>
+
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 
@@ -14,6 +16,8 @@ public:
 	void keyPressed(int key);
 private:
 	void updateContours();
+
+	void processPath(std::vector<ofPoint> &blob, ofPath &path);
 
 	ofVideoGrabber grabber;
 
@@ -30,6 +34,8 @@ private:
 
 	ofPath silhouettes;
 	ofPath holes;
+
+	ofPolyline simplifier;
 
 	int bgR;
 	int bgG;
