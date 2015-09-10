@@ -13,6 +13,8 @@ public:
 
 	void keyPressed(int key);
 private:
+	void updateContours();
+
 	ofVideoGrabber grabber;
 
 	ofxCvColorImage image;
@@ -25,6 +27,9 @@ private:
 	int threshold;
 	float simplification;
 	bool learn;
+
+	ofPath silhouettes;
+	ofPath holes;
 
 	int bgR;
 	int bgG;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "ofApp.h"
 
 using namespace std;
@@ -30,6 +31,10 @@ void ofApp::setup() {
 	this->bgR = 124;
 	this->bgG = 188;
 	this->bgB = 6;
+
+	this->silhouettes.setFillColor(ofColor::fromHex(0));
+	this->silhouettes.setFilled(true);
+	this->holes.setFilled(true);
 }
 
 void ofApp::update() {
@@ -53,22 +58,52 @@ void ofApp::update() {
 
 		this->contourFinder.findContours(this->imageDiff, CONTOUR_SIZE,
 			(IMG_SIZE_W * IMG_SIZE_H) / 3, 10, true);
+
+		this->updateContours();
+	}
+}
+
+void ofApp::updateContours() {
+	this->holes.setFillColor(ofColor(this->bgR, this->bgG, this->bgB));
+
+	this->silhouettes.clear();
+	this->holes.clear();
+
+	vector<ofxCvBlob>::iterator bit = this->contourFinder.blobs.begin();
+	while (bit != this->contourFinder.blobs.end()) {
+		ofxCvBlob blob = *bit;
+
+		ofPath &path = blob.hole ? this->holes : this->silhouettes;
+
+		vector<ofPoint>::iterator pit = blob.pts.begin();
+		bool first = true;
+		while (pit != blob.pts.end()) {
+			ofPoint pt = *pit;
+
+			if (first) {
+				first = false;
+				path.moveTo(pt);
+			} else {
+				path.curveTo(pt);
+			}
+
+			++pit;
+		}
+
+		path.close();
+
+		++bit;
 	}
 }
 
 void ofApp::draw() {
 	ofSetHexColor(0xFFFFFF);
-	this->image.draw(20,20);
-	this->imageGray.draw(360,20);
-	this->imageBg.draw(20,280);
-	this->imageDiff.draw(360,280);
+	this->image.draw(0, IMG_SIZE_H);
+	this->imageDiff.draw(0, 0);
+	this->contourFinder.draw(0, 0);
 
-	ofFill();
-	ofSetHexColor(0x333333);
-	ofDrawRectangle(360, 540, IMG_SIZE_W, IMG_SIZE_H);
-	ofSetHexColor(0xFFFFFF);
-
-	this->contourFinder.draw(350, 540);
+	this->silhouettes.draw(IMG_SIZE_W, 0);
+	//this->holes.draw(IMG_SIZE_W, 0);
 }
 
 void ofApp::keyPressed(int key) {
