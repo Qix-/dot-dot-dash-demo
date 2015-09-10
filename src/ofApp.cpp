@@ -331,7 +331,7 @@ void ofApp::keyPressed(int key) {
 		case '5':
 		case '6':
 		case '7': // ... free fallin'...
-		case '8':
+		case '8': // (yes, I understand this could be two conditionals.)
 		case '9':
 			this->bands[key - '1'].enabled = !this->bands[key - '1'].enabled;
 			break;
