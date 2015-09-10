@@ -94,6 +94,9 @@ void ofApp::updateContours() {
 
 		++bit;
 	}
+
+	this->silhouettes.simplify(this->simplification);
+	this->holes.simplify(this->simplification);
 }
 
 void ofApp::draw() {
