@@ -1,3 +1,7 @@
+![DotDotDash demo gif](media/general.gif)
+
+---
+
 # Demo for Dot-Dot-Dash
 
 Inspired by the old Apple iPod silhouette (by Susan Alinsangan) campaign.
@@ -96,6 +100,8 @@ to help fine-tune the settings (`d`).
 
 > The blob size settings don't make too much of a difference.
 
+![DotDotDash video debug demo gif](media/video-debug.gif)
+
 #### Sound Debug
 The audio portion of this demo allows the user to drag/drop a music file onto
 the application and perform FFT/peak average analysis on the playing music
@@ -119,3 +125,6 @@ to change the color of the background.
 > I recommend against using the very first band, as I don't thing the underlying
   FFT algorithms perform a 20hz cut, causing that band to clip almost all of the
   time.
+
+
+![DotDotDash sound debug demo gif](media/sound-debug.gif)
