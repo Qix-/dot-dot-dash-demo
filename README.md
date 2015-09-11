@@ -122,7 +122,7 @@ to change the color of the background.
   The first 18 bands can be toggled, the first nine with `0` - `9` and the
   second nine with `Shift + 0` - `Shift + 9`.
 
-> I recommend against using the very first band, as I don't thing the underlying
+> I recommend against using the very first band, as I don't think the underlying
   FFT algorithms perform a 20hz cut, causing that band to clip almost all of the
   time.
 
