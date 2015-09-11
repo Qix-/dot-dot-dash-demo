@@ -2,7 +2,7 @@
 
 Inspired by the old Apple iPod silhouette (by Susan Alinsangan) campaign.
 
-![silhouette girl](http://www.onewomanmarketing.com/wp-content/uploads/2009/08/090803-AppleExample.jpg)
+![silhouette girl](http://www.onewomanmarketing.com/wp-content/uploads/2009/08/090803-AppleExample.jpg)<br>
 <sup>Apple iPod Silhouette Campaign</sup>
 
 There are a lot of ways this could be achieved, and this definitely isn't
