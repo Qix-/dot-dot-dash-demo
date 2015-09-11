@@ -44,6 +44,9 @@ private:
 
 	ofxCvContourFinder contourFinder;
 
+	int frame;
+	int frameDelay;
+
 	ofSoundPlayer player;
 	float bumpThreshold;
 	Band bands[BUMP_BANDS];

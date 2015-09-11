@@ -53,6 +53,9 @@ void ofApp::setup() {
 	this->onBump(); // Initialize the background color.
 
 	this->showHoles = false;
+
+	this->frameDelay = 0;
+	this->frame = 0;
 }
 
 void ofApp::update() {
@@ -61,7 +64,8 @@ void ofApp::update() {
 	this->grabber.update();
 	bool newFrame = this->grabber.isFrameNew();
 
-	if (newFrame) {
+	if (newFrame && this->frame-- == 0) {
+		this->frame = this->frameDelay;
 		this->image.setFromPixels(this->grabber.getPixels());
 		this->image.mirror(false, true);
 		this->imageGray = this->image;
@@ -323,6 +327,15 @@ void ofApp::keyPressed(int key) {
 		case '-':
 			--this->cooldownCount;
 			cout << "cooldown count: " << this->cooldownCount << endl;
+			break;
+		case 'v':
+			++this->frameDelay;
+			cout << "frame delay: " << this->frameDelay << endl;
+			break;
+		case 'c':
+			--this->frameDelay;
+			this->frameDelay = max(this->frameDelay, 0);
+			cout << "frame delay: " << this->frameDelay << endl;
 			break;
 		case '1':
 		case '2':  // and I'm free ...
