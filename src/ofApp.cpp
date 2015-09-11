@@ -254,7 +254,8 @@ void ofApp::draw() {
 
 	if (this->debug) {
 		ofSetHexColor(0xFFFFFF);
-		this->image.draw(0, IMG_SIZE_H);
+		this->image.draw(0, 0);
+		ofSetColor(0xFF, 0xFF, 0xFF, 100);
 		this->imageDiff.draw(0, 0);
 		this->contourFinder.draw(0, 0);
 	}
