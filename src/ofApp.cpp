@@ -201,8 +201,8 @@ void ofApp::updateContours() {
 		path.close();
 	}
 
-	float scaleFactorX = ofGetWidth() / IMG_SIZE_W;
-	float scaleFactorY = ofGetHeight() / IMG_SIZE_H;
+	float scaleFactorX = (float)ofGetWidth() / (float)IMG_SIZE_W;
+	float scaleFactorY = (float)ofGetHeight() / (float)IMG_SIZE_H;
 
 	this->silhouettes.scale(scaleFactorX, scaleFactorY);
 	this->holes.scale(scaleFactorX, scaleFactorY);
