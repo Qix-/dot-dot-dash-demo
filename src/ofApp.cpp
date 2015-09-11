@@ -32,6 +32,7 @@ void ofApp::setup() {
 
 	this->learn = true;
 	this->threshold = 85;
+	this->simplification = 1.8f;
 
 	this->silhouettes.setFillColor(ofColor::fromHex(0));
 	this->silhouettes.setFilled(true);
