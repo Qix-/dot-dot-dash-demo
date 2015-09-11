@@ -4,8 +4,8 @@
 
 using namespace std;
 
-static const int IMG_SIZE_W = 320;
-static const int IMG_SIZE_H = 240;
+static const int IMG_SIZE_W = 800;
+static const int IMG_SIZE_H = 600;
 static const int THRESHOLD_INC = 1;
 static const int MAX_BLOBS = 4; // Keep it around (number of people * 2)
 static const float SIMPLIFICATION_INC = 0.1f;
