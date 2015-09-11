@@ -49,6 +49,12 @@ four haar detectors (ear/upper body, frontal and profile), passerbys would
 see themselves with the earbuds - without having to do much more than just 'be
 there'.
 
+Lastly, in the event the earbuds would be possible (and a Haar cascade was
+trained) then the cable would simply be a Box2D (or if we had enough budget
+to figure out body sizes in 3D, bullet physics) enabled cord. People could dance
+and the cord would fly around as if it were really on them. Subtle but
+effective.
+
 ---
 
 # Building / Installing
