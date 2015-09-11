@@ -71,6 +71,7 @@ private:
 	ofColor bg;
 
 	bool debug;
+	bool showCursor;
 };
 
 #endif

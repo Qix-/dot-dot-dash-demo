@@ -43,6 +43,7 @@ void ofApp::setup() {
 
 	this->debug = false;
 	this->debugSound = false;
+	this->showCursor = true;
 
 	this->player.setLoop(true);
 	this->bumpThreshold = 0.4;
@@ -298,6 +299,11 @@ void ofApp::keyPressed(int key) {
 			cout << "debug sound: " << this->debugSound << endl;
 			break;
 		case 'f':
+			if (this->showCursor = !this->showCursor) {
+				ofShowCursor();
+			} else {
+				ofHideCursor();
+			}
 			ofToggleFullscreen();
 			break;
 		case 'x':
