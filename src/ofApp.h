@@ -43,6 +43,8 @@ private:
 	ofxCvGrayscaleImage imageDiff;
 
 	ofxCvContourFinder contourFinder;
+	int findMax;
+	int findMin;
 
 	int frame;
 	int frameDelay;

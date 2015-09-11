@@ -6,8 +6,8 @@ using namespace std;
 
 static const int IMG_SIZE_W = 320;
 static const int IMG_SIZE_H = 240;
-static const int CONTOUR_SIZE = 20;
 static const int THRESHOLD_INC = 1;
+static const int MAX_BLOBS = 20;
 static const float SIMPLIFICATION_INC = 0.1f;
 static const float BASS_INC = 0.05f;
 static const float BASS_INC_FINE = 0.01f;
@@ -29,6 +29,9 @@ void ofApp::setup() {
 	this->imageGray.allocate(IMG_SIZE_W, IMG_SIZE_H);
 	this->imageBg.allocate(IMG_SIZE_W, IMG_SIZE_H);
 	this->imageDiff.allocate(IMG_SIZE_W, IMG_SIZE_H);
+
+	this->findMin = 20;
+	this->findMax = (IMG_SIZE_W * IMG_SIZE_H) / 3;
 
 	this->learn = true;
 	this->threshold = 85;
@@ -80,8 +83,8 @@ void ofApp::update() {
 		this->imageDiff.absDiff(this->imageBg, this->imageGray);
 		this->imageDiff.threshold(this->threshold);
 
-		this->contourFinder.findContours(this->imageDiff, CONTOUR_SIZE,
-			(IMG_SIZE_W * IMG_SIZE_H) / 3, 10, true);
+		this->contourFinder.findContours(this->imageDiff, this->findMin,
+			this->findMax, MAX_BLOBS, true);
 
 		this->updateContours();
 	}
@@ -337,6 +340,22 @@ void ofApp::keyPressed(int key) {
 			--this->frameDelay;
 			this->frameDelay = max(this->frameDelay, 0);
 			cout << "frame delay: " << this->frameDelay << endl;
+			break;
+		case 'm':
+			++this->findMin;
+			cout << "this min contour size: " << this->findMin << endl;
+			break;
+		case 'n':
+			--this->findMin;
+			cout << "this min contour size: " << this->findMin << endl;
+			break;
+		case 'M':
+			++this->findMax;
+			cout << "this max contour size: " << this->findMax << endl;
+			break;
+		case 'N':
+			--this->findMax;
+			cout << "this max contour size: " << this->findMax << endl;
 			break;
 		case '1':
 		case '2':  // and I'm free ...
