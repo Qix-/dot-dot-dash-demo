@@ -34,7 +34,7 @@ void ofApp::setup() {
 	this->findMax = (IMG_SIZE_W * IMG_SIZE_H) / 3;
 
 	this->learn = true;
-	this->threshold = 85;
+	this->threshold = 75;
 	this->simplification = 1.8f;
 
 	this->silhouettes.setFillColor(ofColor::fromHex(0));
@@ -45,12 +45,12 @@ void ofApp::setup() {
 	this->debugSound = false;
 
 	this->player.setLoop(true);
-	this->bumpThreshold = 0.7;
+	this->bumpThreshold = 0.4;
 	memset(&this->bands[0], 0, sizeof(this->bands));
 	this->bump = 0.0f;
-	this->dither = 0.2f;
+	this->dither = 0.14f;
 
-	this->cooldownCount = 10;
+	this->cooldownCount = 5;
 	this->cooldown = 0;
 
 	this->bg.setHsb(0, 161, 255);
